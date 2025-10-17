@@ -14,6 +14,8 @@ import 'package:dashboard/bloc/bpwidgetprops/bpwidget_props_bloc.dart';
 import 'package:dashboard/bloc/bpwidgetprops/model/bpwidget_props.dart';
 import 'package:dashboard/bloc/bpwidgets/bpwidget_bloc.dart';
 import 'package:dashboard/bloc/bpwidgets/model/bpwidget.dart';
+import 'package:dashboard/bloc/bpwidgets/model/bpwidget_schema.dart';
+import 'package:dashboard/pages/dynamic_form_builder.dart';
 import 'package:dashboard/types/drag_drop_types.dart';
 import 'package:dashboard/utils/math_utils.dart';
 import 'package:dashboard/widgets/item_panel.dart';
@@ -198,7 +200,34 @@ class _SplitPanelState extends State<SplitPanel> {
         );
 
         return Scaffold(
-          appBar: AppBar(title: Text('BuildPerfect'), elevation: 2),
+          appBar: AppBar(
+            title: Text('BuildPerfect'),
+            elevation: 2,
+            actions: [
+              IconButton(
+                onPressed: () {
+                  // upper.asMap().entries.map((e) {
+                  //   print(e.value.toJson());
+                  // });
+
+                  // for (int i = 0; i < upper.length; i++) {
+                  //   print(upper[i].toJson());
+                  // }
+
+                  final schema = BpwidgetSchema(schema: upper);
+                  print('schema => ${schema.toJson()}');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) => DynamicForm(jsonSchema: schema.schema),
+                    ),
+                  );
+                },
+                icon: Icon(Icons.code),
+              ),
+            ],
+          ),
           body: LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               final gutter = widget.columns + 1;

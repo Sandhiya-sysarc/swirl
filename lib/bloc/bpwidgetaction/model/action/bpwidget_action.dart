@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 /*
   @author   :   karthick.d  13/10/2025
@@ -13,7 +15,7 @@ class BpwidgetAction {
   final String id;
   final String name;
   final BPwidgetJob job;
-  BpwidgetAction({required this.name, required this.id, required this.job});
+  BpwidgetAction({required this.id, required this.name, required this.job});
 
   factory BpwidgetAction.initWithId({required String id}) => BpwidgetAction(
     id: id,
@@ -29,4 +31,39 @@ class BpwidgetAction {
 
   @override
   String toString() => 'BpwidgetAction(id: $id, name: $name, job: $job)';
+
+  BpwidgetAction copyWith({String? id, String? name, BPwidgetJob? job}) {
+    return BpwidgetAction(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      job: job ?? this.job,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{'id': id, 'name': name, 'job': job.toMap()};
+  }
+
+  factory BpwidgetAction.fromMap(Map<String, dynamic> map) {
+    return BpwidgetAction(
+      id: map['id'] as String,
+      name: map['name'] as String,
+      job: BPwidgetJob.fromMap(map['job'] as Map<String, dynamic>),
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory BpwidgetAction.fromJson(String source) =>
+      BpwidgetAction.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  bool operator ==(covariant BpwidgetAction other) {
+    if (identical(this, other)) return true;
+
+    return other.id == id && other.name == name && other.job == job;
+  }
+
+  @override
+  int get hashCode => id.hashCode ^ name.hashCode ^ job.hashCode;
 }

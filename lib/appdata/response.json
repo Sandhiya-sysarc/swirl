@@ -1,0 +1,94 @@
+{
+	"schema": [
+		{
+			"widgetType": "Textfield",
+			"id": "0637626807",
+			"bpwidgetProps": {
+				"label": "firstname",
+				"controlName": "page0_firstname",
+				"controlType": "Textfield",
+				"isRequired": "true",
+				"max": "40",
+				"min": "0",
+				"isVerificationRequired": "false",
+				"validationPatterns": "none",
+				"id": "0637626807"
+			},
+			"bpwidgetAction": ""
+		},
+		{
+			"widgetType": "Textfield",
+			"id": "0637668806",
+			"bpwidgetProps": {
+				"label": "lastname",
+				"controlName": "page0_lastname",
+				"controlType": "Textfield",
+				"isRequired": "false",
+				"max": "40",
+				"min": "0",
+				"isVerificationRequired": "false",
+				"validationPatterns": "none",
+				"id": "0637668806"
+			},
+			"bpwidgetAction": ""
+		},
+		{
+			"widgetType": "Dropdown",
+			"id": "0637715725",
+			"bpwidgetProps": {
+				"label": "gender",
+				"controlName": "page0_gender",
+				"controlType": "Dropdown",
+				"isRequired": "false",
+				"max": "0",
+				"min": "0",
+				"isVerificationRequired": "false",
+				"validationPatterns": "none",
+				"id": "0637715725"
+			},
+			"bpwidgetAction": ""
+		},
+		{
+			"widgetType": "Button",
+			"id": "0637646629",
+			"bpwidgetProps": {
+				"label": "submit",
+				"controlName": "page0_submit",
+				"controlType": "Button",
+				"isRequired": "false",
+				"max": null,
+				"min": null,
+				"isVerificationRequired": "false",
+				"validationPatterns": null,
+				"id": "0637646629"
+			},
+			"bpwidgetAction": [
+				{
+					"id": "0637688239",
+					"name": "onclick",
+					"job": {
+						"type": "Navigation",
+						"id": "0637688239",
+						"name": "go",
+						"taskDataprovider": {
+							"url": "home",
+							"data": null
+						},
+						"tasks": [
+							{
+								"id": "0637672358",
+								"name": "checkUrl",
+								"status": null
+							},
+							{
+								"id": "0637714433",
+								"name": "navigation",
+								"status": null
+							}
+						]
+					}
+				}
+			]
+		}
+	]
+}
