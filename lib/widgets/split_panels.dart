@@ -186,8 +186,11 @@ class _SplitPanelState extends State<SplitPanel> {
                 state.bpWidgetsList![0].bpwidgetProps!.validationPatterns,
             id: state.bpWidgetsList![0].bpwidgetProps!.id,
           );
-
-          _upper.bpwidgetAction = state.bpWidgetsList![0].bpwidgetAction;
+          if (state.bpWidgetsList![0].bpwidgetAction == null) {
+            _upper.bpwidgetAction = [BpwidgetAction.initWithId(id: '')];
+          } else {
+            _upper.bpwidgetAction = state.bpWidgetsList![0].bpwidgetAction;
+          }
 
           // _upper.copyWith(bpwidgetProps: state.bpWidgetsList![0].bpwidgetProps);
           upper[indexOfSelectedBpWidget] = _upper;
@@ -215,12 +218,18 @@ class _SplitPanelState extends State<SplitPanel> {
                   // }
 
                   final schema = BpwidgetSchema(schema: upper);
-                  print('schema => ${schema.toJson()}');
+                  final schemaJson = schema.toJson();
+                  final schemaWidget = BpwidgetSchema.fromJson(schemaJson);
+                  print('schema => $schemaJson');
+                  print(
+                    'widget =>${schemaWidget.schema[0].bpwidgetProps!.controlName}',
+                  );
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder:
-                          (context) => DynamicForm(jsonSchema: schema.schema),
+                          (context) => DynamicForm(widgetSchema: schema.schema),
                     ),
                   );
                 },

@@ -9,68 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'dart:convert';
 
-// class BpWidget {
-//   final String widgetType;
-//   final String id;
-//   final BpWidgetProps bpwidgetProps;
-
-//   BpWidget({
-//     required this.widgetType,
-//     required this.id,
-//     required this.bpwidgetProps,
-//   });
-
-//   factory BpWidget.fromJson(Map<String, dynamic> json) {
-//     return BpWidget(
-//       widgetType: json['widgetType'],
-//       id: json['id'],
-//       bpwidgetProps: BpWidgetProps.fromJson(json['bpwidgetProps']),
-//     );
-//   }
-// }
-
-// class BpWidgetProps {
-//   final String label;
-//   final String controlName;
-//   final String controlType;
-//   final String isRequired;
-//   final String? max;
-//   final String? min;
-//   final String isVerificationRequired;
-//   final String? validationPatterns;
-//   final String id;
-
-//   BpWidgetProps({
-//     required this.label,
-//     required this.controlName,
-//     required this.controlType,
-//     required this.isRequired,
-//     this.max,
-//     this.min,
-//     required this.isVerificationRequired,
-//     this.validationPatterns,
-//     required this.id,
-//   });
-
-//   factory BpWidgetProps.fromJson(Map<String, dynamic> json) {
-//     return BpWidgetProps(
-//       label: json['label'],
-//       controlName: json['controlName'],
-//       controlType: json['controlType'],
-//       isRequired: json['isRequired'],
-//       max: json['max'],
-//       min: json['min'],
-//       isVerificationRequired: json['isVerificationRequired'],
-//       validationPatterns: json['validationPatterns'],
-//       id: json['id'],
-//     );
-//   }
-// }
-
 class DynamicForm extends StatelessWidget {
-  final List<BPWidget> jsonSchema;
+  final List<BPWidget> widgetSchema;
 
-  const DynamicForm({Key? key, required this.jsonSchema}) : super(key: key);
+  const DynamicForm({Key? key, required this.widgetSchema}) : super(key: key);
 
   FormGroup buildFormGroup(List<BPWidget> widgets) {
     final controls = <String, AbstractControl<dynamic>>{};
@@ -162,16 +104,17 @@ class DynamicForm extends StatelessWidget {
                                 ),
                           );
                           if (action != null &&
-                              action.job.type == 'Navigation') {
+                              action.job!.type == 'Navigation') {
                             // Placeholder for navigation logic
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
-                                  'Navigating to ${action.job.taskDataprovider.url}',
+                                  'Navigating to ${action.job!.taskDataprovider.url}',
                                 ),
                               ),
                             );
-                            if (action.job.taskDataprovider.url.toLowerCase() ==
+                            if (action.job!.taskDataprovider.url
+                                    .toLowerCase() ==
                                 'dashboard') {
                               Navigator.push(
                                 context,
@@ -196,7 +139,7 @@ class DynamicForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // final schema = BpwidgetSchema.fromJson(jsonSchema);
-    final widgets = jsonSchema;
+    final widgets = widgetSchema;
     final formGroup = buildFormGroup(widgets);
 
     return Scaffold(

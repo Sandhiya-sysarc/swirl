@@ -76,9 +76,9 @@ class _ActionsPanelState extends State<ActionsPanel> {
             widget.bpWidget!.bpwidgetAction != null) {
           BpwidgetAction action = widget.bpWidget!.bpwidgetAction![0];
           actionform.controls['event']!.patchValue(action.name);
-          actionform.controls['action']!.patchValue(action.job.name);
+          actionform.controls['action']!.patchValue(action.job!.name);
           actionform.controls['pageurl']!.patchValue(
-            action.job.taskDataprovider.url,
+            action.job!.taskDataprovider.url,
           );
         }
 

@@ -20,7 +20,7 @@ class BpwidgetSchema {
   factory BpwidgetSchema.fromMap(Map<String, dynamic> map) {
     return BpwidgetSchema(
       schema: List<BPWidget>.from(
-        (map['schema'] as List<int>).map<BPWidget>(
+        (map['schema'] as List<dynamic>).map<BPWidget>(
           (x) => BPWidget.fromMap(x as Map<String, dynamic>),
         ),
       ),

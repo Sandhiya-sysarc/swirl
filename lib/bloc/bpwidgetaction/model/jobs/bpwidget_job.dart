@@ -69,7 +69,7 @@ class BPwidgetJob {
         map['taskDataprovider'] as Map<String, dynamic>,
       ),
       tasks: List<BPwidgetTask>.from(
-        (map['tasks'] as List<int>).map<BPwidgetTask>(
+        (map['tasks'] as List<dynamic>).map<dynamic>(
           (x) => BPwidgetTask.fromMap(x as Map<String, dynamic>),
         ),
       ),

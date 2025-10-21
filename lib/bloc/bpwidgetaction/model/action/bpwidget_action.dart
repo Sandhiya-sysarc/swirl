@@ -14,7 +14,7 @@ import 'package:dashboard/bloc/bpwidgetaction/model/tasks/bpwidget_task.dart';
 class BpwidgetAction {
   final String id;
   final String name;
-  final BPwidgetJob job;
+  final BPwidgetJob? job;
   BpwidgetAction({required this.id, required this.name, required this.job});
 
   factory BpwidgetAction.initWithId({required String id}) => BpwidgetAction(
@@ -41,7 +41,7 @@ class BpwidgetAction {
   }
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{'id': id, 'name': name, 'job': job.toMap()};
+    return <String, dynamic>{'id': id, 'name': name, 'job': job!.toMap()};
   }
 
   factory BpwidgetAction.fromMap(Map<String, dynamic> map) {

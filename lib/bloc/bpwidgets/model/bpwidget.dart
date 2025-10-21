@@ -46,7 +46,9 @@ class BPWidget {
 
   factory BPWidget.fromMap(Map<String, dynamic> map) {
     return BPWidget(
-      widgetType: map['widgetType'] ?? map['widgetType'],
+      widgetType: PlaceholderWidgets.values.firstWhere(
+        (e) => e.name == map['widgetType'],
+      ),
       id: map['id'] != null ? map['id'] as String : null,
       bpwidgetProps:
           map['bpwidgetProps'] != null
@@ -57,7 +59,7 @@ class BPWidget {
       bpwidgetAction:
           map['bpwidgetAction'] != null
               ? List<BpwidgetAction>.from(
-                (map['bpwidgetAction'] as List<int>).map<BpwidgetAction?>(
+                (map['bpwidgetAction'] as List<dynamic>).map<dynamic>(
                   (x) => BpwidgetAction.fromMap(x as Map<String, dynamic>),
                 ),
               )
