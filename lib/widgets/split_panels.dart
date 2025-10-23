@@ -230,7 +230,8 @@ class _SplitPanelState extends State<SplitPanel> {
                     context,
                     MaterialPageRoute(
                       builder:
-                          (context) => MobileScreen(pageData: schemaWidget.schema),
+                          (context) =>
+                              DynamicForm(widgetSchema: schemaWidget.schema),
                     ),
                   );
                 },
@@ -257,9 +258,12 @@ class _SplitPanelState extends State<SplitPanel> {
                   children: [
                     Positioned(
                       // for draggable component
-                      width: leftPanelWidth - 100,
+                      width: leftPanelWidth,
                       height: constraints.maxHeight,
                       left: 0,
+                    child: DecoratedBox(
+                    decoration: BoxDecoration(color: Colors.pink.shade100),
+                      
                       child: MyDropRegion(
                         onDrop: drop,
                         updateDropPreview: updateDropPreview,
@@ -268,6 +272,7 @@ class _SplitPanelState extends State<SplitPanel> {
                         panel: Panel.lower,
 
                         child: ItemPanel(
+			                    width: leftPanelWidth - 100,
                           crossAxisCount: widget.columns,
                           spacing: widget.itemSpacing,
                           items: lower,
@@ -279,6 +284,7 @@ class _SplitPanelState extends State<SplitPanel> {
                         ),
                       ),
                     ),
+		),
                     Positioned(
                       width: 2,
                       height: constraints.maxHeight,
@@ -301,6 +307,7 @@ class _SplitPanelState extends State<SplitPanel> {
                           columns: widget.columns,
                           panel: Panel.upper,
                           child: ItemPanel(
+			                    width: leftPanelWidth - 100,
                             crossAxisCount: widget.columns,
                             spacing: widget.itemSpacing,
                             items: upper,
