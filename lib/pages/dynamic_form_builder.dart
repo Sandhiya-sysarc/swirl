@@ -5,11 +5,7 @@ import 'package:dashboard/bloc/bpwidgets/model/bpwidget.dart';
 import 'package:dashboard/bloc/bpwidgets/model/bpwidget_schema.dart';
 import 'package:dashboard/pages/dashboard_page.dart';
 import 'package:dashboard/types/drag_drop_types.dart';
-import 'package:device_preview/device_preview.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widget_previews.dart';
-import 'package:go_router/go_router.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'dart:convert';
 
@@ -87,12 +83,13 @@ class DynamicForm extends StatelessWidget {
           child: ReactiveFormConsumer(
             builder: (context, form, child) {
               return ElevatedButton(
-                onPressed: () {
-                  print("elevated button clicked");
-                  if (form.valid ) {
-                    final action = widget.bpwidgetAction?.firstWhere(
-                      (action) => action.name == 'onclick',
-                      orElse: () => BpwidgetAction(
+                onPressed:
+                    form.valid
+                        ? () {
+                          final action = widget.bpwidgetAction?.firstWhere(
+                            (action) => action.name == 'onclick',
+                            orElse:
+                                () => BpwidgetAction(
                                   id: '',
                                   name: '',
                                   job: BPwidgetJob(
@@ -105,43 +102,30 @@ class DynamicForm extends StatelessWidget {
                                     tasks: [],
                                   ),
                                 ),
-                    );
-                    if (action?.job!.type == 'Navigation') {
-                      // Placeholder for navigation logic
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            'Navigating to ${action?.job?.taskDataprovider.url}',
-                          ),
-                        ),
-                      );
-                      if (action?.job!.taskDataprovider.url
-                              .toLowerCase() ==
-                          'dashboard') {
-                            Navigator.pushNamed(context, '/second');
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     // builder: (context) => DevicePreview(
-                        //       builder:  (context) =>
-                        //         // MaterialApp(
-                        //         //   useInheritedMediaQuery: true,
-                        //         //   locale: DevicePreview.locale(context),
-                        //         //   builder: DevicePreview.appBuilder,
-                        //         //   theme: ThemeData.light(),
-                        //         //   darkTheme: ThemeData.dark(),
-                        //           // home: 
-                        //           DashboardPage(),
-                        //         // )
-                        //     // ),
-                        //   ),
-                        // );
-                      }
-                    }
-                  } else {
-                    form.markAllAsTouched();
-                  }
-                },
+                          );
+                          if (action != null &&
+                              action.job!.type == 'Navigation') {
+                            // Placeholder for navigation logic
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Navigating to ${action.job!.taskDataprovider.url}',
+                                ),
+                              ),
+                            );
+                            if (action.job!.taskDataprovider.url
+                                    .toLowerCase() ==
+                                'dashboard') {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DashboardPage(),
+                                ),
+                              );
+                            }
+                          }
+                        }
+                        : null,
                 child: Text(widget.bpwidgetProps!.label),
               );
             },
@@ -165,17 +149,17 @@ class DynamicForm extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Center(
-            // child: Container(
-            //   width: 300,
-            //   height: 800,
-            //   decoration: BoxDecoration(
-            //     border: Border.all(
-            //       color: Colors.black,
-            //       width: 5,
-            //       style: BorderStyle.solid,
-            //     ),
-            //     borderRadius: BorderRadius.circular(10),
-            //   ),
+            child: Container(
+              width: 300,
+              height: 800,
+              // decoration: BoxDecoration(
+              //   border: Border.all(
+              //     color: Colors.black,
+              //     width: 5,
+              //     style: BorderStyle.solid,
+              //   ),
+              //   borderRadius: BorderRadius.circular(10),
+              // ),
               child: Padding(
                 padding: const EdgeInsets.all(8),
                 child: Column(
@@ -183,18 +167,10 @@ class DynamicForm extends StatelessWidget {
                   children: [
                     ...buildFormWidgets(widgets),
                     const SizedBox(height: 16),
-                    // ReactiveFormConsumer(
-                    //   builder: (context, form, child) {
-                    //     return ElevatedButton(
-                    //       onPressed: form.valid ? () {} : null,
-                    //       child: const Text('Submit'),
-                    //     );
-                    //   },
-                    // ),
                   ],
                 ),
               ),
-            // ),
+            ),
           ),
         ),
       ),
