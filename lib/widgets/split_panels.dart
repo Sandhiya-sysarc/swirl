@@ -231,7 +231,7 @@ class _SplitPanelState extends State<SplitPanel> {
                     MaterialPageRoute(
                       builder:
                           (context) =>
-                              DynamicForm(widgetSchema: schemaWidget.schema),
+                              MobileScreen(pageData: schemaWidget.schema),
                     ),
                   );
                 },
@@ -261,30 +261,30 @@ class _SplitPanelState extends State<SplitPanel> {
                       width: leftPanelWidth,
                       height: constraints.maxHeight,
                       left: 0,
-                    child: DecoratedBox(
-                    decoration: BoxDecoration(color: Colors.pink.shade100),
-                      
-                      child: MyDropRegion(
-                        onDrop: drop,
-                        updateDropPreview: updateDropPreview,
-                        childSize: itemSize,
-                        columns: widget.columns,
-                        panel: Panel.lower,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(color: Colors.pink.shade100),
 
-                        child: ItemPanel(
-			                    width: leftPanelWidth - 100,
-                          crossAxisCount: widget.columns,
-                          spacing: widget.itemSpacing,
-                          items: lower,
-                          onDragStart: onItemDragStart,
+                        child: MyDropRegion(
+                          onDrop: drop,
+                          updateDropPreview: updateDropPreview,
+                          childSize: itemSize,
+                          columns: widget.columns,
                           panel: Panel.lower,
-                          dragStart: dragStart,
-                          dropPreview: dropPreview,
-                          hoveringData: hoveringData,
+
+                          child: ItemPanel(
+                            width: leftPanelWidth - 100,
+                            crossAxisCount: widget.columns,
+                            spacing: widget.itemSpacing,
+                            items: lower,
+                            onDragStart: onItemDragStart,
+                            panel: Panel.lower,
+                            dragStart: dragStart,
+                            dropPreview: dropPreview,
+                            hoveringData: hoveringData,
+                          ),
                         ),
                       ),
                     ),
-		),
                     Positioned(
                       width: 2,
                       height: constraints.maxHeight,
@@ -307,7 +307,7 @@ class _SplitPanelState extends State<SplitPanel> {
                           columns: widget.columns,
                           panel: Panel.upper,
                           child: ItemPanel(
-			                    width: leftPanelWidth - 100,
+                            width: leftPanelWidth - 100,
                             crossAxisCount: widget.columns,
                             spacing: widget.itemSpacing,
                             items: upper,
