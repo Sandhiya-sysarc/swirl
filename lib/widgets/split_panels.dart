@@ -235,7 +235,7 @@ class _SplitPanelState extends State<SplitPanel> {
                     MaterialPageRoute(
                       builder:
                           (context) =>
-                              DynamicForm(widgetSchema: schemaWidget.schema),
+                              MobileScreen(pageData: schemaWidget.schema),
                     ),
                   );
                 },
