@@ -16,6 +16,7 @@ import 'package:dashboard/bloc/bpwidgets/bpwidget_bloc.dart';
 import 'package:dashboard/bloc/bpwidgets/model/bpwidget.dart';
 import 'package:dashboard/bloc/bpwidgets/model/bpwidget_schema.dart';
 import 'package:dashboard/bloc/bpwidgets/page_container.dart';
+import 'package:dashboard/pages/canva_nav_rail.dart';
 import 'package:dashboard/pages/dynamic_form_builder.dart';
 import 'package:dashboard/types/drag_drop_types.dart';
 import 'package:dashboard/utils/math_utils.dart';
@@ -42,7 +43,8 @@ class _SplitPanelState extends State<SplitPanel> {
   ///  the left panel -> pages panel where user can select pages to configure
   /// BPWidgets
   ///
- BPPageController bpController = BPPageController.loadNPages(5);
+  BPPageController bpController = BPPageController.loadNPages(5);
+
   ///
   List<BPWidget> upper = [];
   final List<BPWidget> lower = [
@@ -137,7 +139,8 @@ class _SplitPanelState extends State<SplitPanel> {
           id: uniqueID,
           bpwidgetProps: BpwidgetProps(
             label: '',
-            controlName: '${bpController.pagesRegistry.entries.first.value.pageName}_',
+            controlName:
+                '${bpController.pagesRegistry.entries.first.value.pageName}_',
 
             controlType: hoveringData!.widgetType!.name,
             id: uniqueID,
@@ -161,7 +164,6 @@ class _SplitPanelState extends State<SplitPanel> {
 
   @override
   Widget build(BuildContext context) {
-    
     return BlocConsumer<BpwidgetBloc, BpwidgetState>(
       /// listener method will be invoked when ever the BPWidgetState objet
       /// changes . in our case whenever we are adding the Bpwidgets in
@@ -250,55 +252,57 @@ class _SplitPanelState extends State<SplitPanel> {
                   constraints.maxWidth - (widget.itemSpacing * gutter);
               final columnWidth = spaceForColumns / widget.columns;
               final itemSize = Size(columnWidth, columnWidth);
-              final leftPanelWidth = constraints.maxWidth / 4;
+              final double navrailWidth = 100;
+              final leftPanelWidth = constraints.maxWidth / 5;
               final centerPanelWidth = constraints.maxWidth / 2;
               final rightPanelWidth =
                   constraints.maxWidth -
                   (leftPanelWidth + centerPanelWidth) +
                   80;
-                  final leftPanelheight =constraints.maxHeight/2;
+              final leftPanelheight = constraints.maxHeight / 2;
               return Padding(
                 padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
                 child: Stack(
                   children: [
                     Positioned(
-                      width: 50,
+                      width: navrailWidth,
                       left: 0,
-                       height: constraints.maxHeight,
-                      child: CustomNavigationRail(
-                        selectedIndex: navSelectedIndex,
-                        isExtend: false,
-                        label: ["Home", "Pages", "More"],
-                        icons: [Icons.home, Icons.file_copy, Icons.more],
-                        backgroundColor: Colors.pink.shade100,
-                        onDestinationSelected: (value) {
-                          setState(() {
-                            navSelectedIndex = value;
-                            if (navSelectedIndex == 0) {
-                              Navigator.pop(context);
-                            }
-                          });
-                        },
-                      ),
+                      height: constraints.maxHeight,
+                      child: CanvaNavigationRailExample(),
+                      // child: CustomNavigationRail(
+                      //   selectedIndex: navSelectedIndex,
+                      //   isExtend: false,
+                      //   label: ["Home", "Pages", "More"],
+                      //   icons: [Icons.home, Icons.file_copy, Icons.more],
+                      //   backgroundColor: Colors.pink.shade100,
+                      //   onDestinationSelected: (value) {
+                      //     setState(() {
+                      //       navSelectedIndex = value;
+                      //       if (navSelectedIndex == 0) {
+                      //         Navigator.pop(context);
+                      //       }
+                      //     });
+                      //   },
+                      // ),
                     ),
                     Positioned(
                       // for draggable component
-                      width: leftPanelWidth,
-                      height: leftPanelheight-2,
-                      left: 50,
+                      width: leftPanelWidth - 15,
+                      height: leftPanelheight - 2,
+                      left: navrailWidth - 30,
                       top: 0,
                       child: DecoratedBox(
-                        decoration: BoxDecoration(color: Colors.pink.shade100),
-                    
+                        decoration: BoxDecoration(color: Color(0xFFF0F1F5)),
+
                         child: MyDropRegion(
                           onDrop: drop,
                           updateDropPreview: updateDropPreview,
                           childSize: itemSize,
                           columns: widget.columns,
                           panel: Panel.lower,
-                    
+
                           child: ItemPanel(
-                            width: leftPanelWidth - 100,
+                            width: leftPanelWidth - 20,
                             crossAxisCount: widget.columns,
                             spacing: widget.itemSpacing,
                             items: lower,
@@ -311,17 +315,18 @@ class _SplitPanelState extends State<SplitPanel> {
                         ),
                       ),
                     ),
-                    
+
                     Positioned(
-                      width: leftPanelWidth,
-                      height: leftPanelheight-2,
-                      left: 50,
+                      width: leftPanelWidth - 20,
+                      height: leftPanelheight - 2,
+                      left: navrailWidth - 30,
                       bottom: 0,
                       child: DecoratedBox(
-                        decoration: BoxDecoration(color: Colors.pink.shade100),
+                        decoration: BoxDecoration(color: Color(0xFFF0F1F5)),
                         child: PageContainer(
-                          width: leftPanelWidth - 100, 
-                          bpPageController: bpController),
+                          width: leftPanelWidth - 100,
+                          bpPageController: bpController,
+                        ),
                       ),
                     ),
                     // Positioned(
@@ -334,7 +339,7 @@ class _SplitPanelState extends State<SplitPanel> {
                       // centerpanel for dragtarget
                       width: centerPanelWidth,
                       height: constraints.maxHeight,
-                      left: leftPanelWidth+50,
+                      left: leftPanelWidth + 50,
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           color: GlobalColors.centerPanelBGColor,
@@ -365,7 +370,7 @@ class _SplitPanelState extends State<SplitPanel> {
                       height: constraints.maxHeight,
                       right: 0,
                       child: DecoratedBox(
-                        decoration: BoxDecoration(color: Colors.pink.shade100),
+                        decoration: BoxDecoration(color: Color(0xFFF0F1F5)),
 
                         /// RightPanel - is parent model for props , action and
                         /// datasource panel

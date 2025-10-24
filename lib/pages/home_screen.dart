@@ -1,4 +1,5 @@
 import 'package:dashboard/pages/split_screen.dart';
+import 'package:dashboard/widgets/api_split_panel.dart';
 import 'package:dashboard/widgets/custom_navigation_rail.dart';
 import 'package:dashboard/widgets/my_Projects.dart';
 import 'package:dashboard/widgets/search_bar.dart';
@@ -6,7 +7,8 @@ import 'package:dashboard/widgets/split_panels.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen(
+    {super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -14,42 +16,42 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int navSelectedIndex = 0;
-   List<Map<String, dynamic>> myProjects = [
-      {
-        "icon": Icons.ac_unit,
-        "projectName": "Vehicle Loan",
-        "projectId": 00000000018,
-        "createdOn": "22/10/2025",
-      },
-      {
-        "icon": Icons.ac_unit,
-        "projectName": "Agriculture Loan",
-        "projectId": 00000000019,
-        "createdOn": "18/10/2025",
-      },
-      {
-        "icon": Icons.ac_unit,
-        "projectName": "Gold Loan",
-        "projectId": 00000000020,
-        "createdOn": "12/10/2025",
-      },
-      {
-        "icon": Icons.ac_unit,
-        "projectName": "Housing Loan",
-        "projectId": 00000000021,
-        "createdOn": "01/10/2025",
-      },
-      {
-        "icon": Icons.ac_unit,
-        "projectName": "MLAP",
-        "projectId": 00000000022,
-        "createdOn": "02/09/2025",
-      },
-    ];
+  List<Map<String, dynamic>> myProjects = [
+    {
+      "icon": Icons.ac_unit,
+      "projectName": "Vehicle Loan",
+      "projectId": 00000000018,
+      "createdOn": "22/10/2025",
+    },
+    {
+      "icon": Icons.ac_unit,
+      "projectName": "Agriculture Loan",
+      "projectId": 00000000019,
+      "createdOn": "18/10/2025",
+    },
+    {
+      "icon": Icons.ac_unit,
+      "projectName": "Gold Loan",
+      "projectId": 00000000020,
+      "createdOn": "12/10/2025",
+    },
+    {
+      "icon": Icons.ac_unit,
+      "projectName": "Housing Loan",
+      "projectId": 00000000021,
+      "createdOn": "01/10/2025",
+    },
+    {
+      "icon": Icons.ac_unit,
+      "projectName": "MLAP",
+      "projectId": 00000000022,
+      "createdOn": "02/09/2025",
+    },
+  ];
   Widget getContentWidget(int index) {
     switch (index) {
       case 0:
-        return MyProjects(cardData:myProjects);
+        return MyProjects(cardData: myProjects,);
     }
     return Text("No Project created Yet!");
   }
@@ -109,7 +111,6 @@ class _HomeScreenState extends State<HomeScreen> {
               width: 200,
               decoration: BoxDecoration(
                 border: Border(right: BorderSide(color: Colors.grey, width: 1)),
-               
               ),
               child: CustomNavigationRail(
                 selectedIndex: navSelectedIndex,
@@ -126,6 +127,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   setState(() {
                     navSelectedIndex = value;
                   });
+                  if (value == 3) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MyWidget()),
+                    );
+                  }
                 },
               ),
             ),
@@ -134,9 +142,8 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.all(10),
             child: Container(
               width: 400,
-                decoration: BoxDecoration(
+              decoration: BoxDecoration(
                 border: Border(right: BorderSide(color: Colors.grey, width: 1)),
-               
               ),
               child: getContentWidget(navSelectedIndex),
             ),
