@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(CanvaRail());
-}
-
 class CanvaRail extends StatelessWidget {
+  const CanvaRail({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,6 +17,8 @@ class CanvaRail extends StatelessWidget {
 }
 
 class CanvaNavigationRailExample extends StatefulWidget {
+  const CanvaNavigationRailExample({super.key});
+
   @override
   _CanvaNavigationRailExampleState createState() =>
       _CanvaNavigationRailExampleState();
