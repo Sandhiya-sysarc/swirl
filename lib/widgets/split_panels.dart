@@ -42,7 +42,7 @@ class _SplitPanelState extends State<SplitPanel> {
   ///  the left panel -> pages panel where user can select pages to configure
   /// BPWidgets
   ///
-
+ BPPageController bpController = BPPageController.loadNPages(5);
   ///
   List<BPWidget> upper = [];
   final List<BPWidget> lower = [
@@ -137,7 +137,7 @@ class _SplitPanelState extends State<SplitPanel> {
           id: uniqueID,
           bpwidgetProps: BpwidgetProps(
             label: '',
-            controlName: "page0_",
+            controlName: '${bpController.pagesRegistry.entries.first.value.pageName}_',
 
             controlType: hoveringData!.widgetType!.name,
             id: uniqueID,
@@ -161,7 +161,7 @@ class _SplitPanelState extends State<SplitPanel> {
 
   @override
   Widget build(BuildContext context) {
-    BPPageController bpController = BPPageController.loadNPages(5);
+    
     return BlocConsumer<BpwidgetBloc, BpwidgetState>(
       /// listener method will be invoked when ever the BPWidgetState objet
       /// changes . in our case whenever we are adding the Bpwidgets in
