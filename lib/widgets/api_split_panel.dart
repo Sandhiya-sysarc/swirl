@@ -1,9 +1,10 @@
 import 'dart:convert';
- 
+
 import 'package:dashboard/bloc/apiBuilder/apibuilder_props_bloc.dart';
 import 'package:dashboard/bloc/apiBuilder/apibuilder_props_event.dart';
 import 'package:dashboard/bloc/apiBuilder/apibuilder_props_state.dart';
 import 'package:dashboard/bloc/apiBuilder/model/apibuilder_props.dart';
+import 'package:dashboard/pages/home_screen.dart';
 import 'package:dashboard/widgets/customcontrols/key_value_reactive_dropdown.dart';
 import 'package:dashboard/widgets/customcontrols/key_value_reactive_textbox.dart';
 import 'package:flutter/material.dart';
@@ -12,66 +13,67 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
- 
+
 class MyWidget extends StatelessWidget {
   const MyWidget({super.key});
- 
+
   @override
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+       debugShowCheckedModeBanner: false,
       home: BlocProvider(create: (_) => ApiBloc(), child: const SplitPanel()),
     );
   }
 }
- 
+
 class SplitPanel extends StatefulWidget {
   final int columns;
   final double itemSpacing;
   const SplitPanel({super.key, this.columns = 2, this.itemSpacing = 2.0});
- 
+
   @override
   State<SplitPanel> createState() => _SplitPanelState();
 }
- 
+
 class _SplitPanelState extends State<SplitPanel> {
   String _apiResponse = '';
   bool _isLoading = false;
   final form = FormGroup({
-    'apiName': FormControl<String>(validators: [Validators.required]),
-    'apiEndpoint': FormControl<String>(validators: [Validators.required]),
+    'apiName': FormControl<String>(),
+    'apiEndpoint': FormControl<String>(),
     'apiMethodName': FormControl<String>(),
-    'httpMethod': FormControl<String>(validators: [Validators.required]),
+    'httpMethod': FormControl<String>(),
     'headers': FormArray([]),
     'requestKey': FormArray([]),
     'responses': FormArray([]),
   });
- 
+
   final headerEntryForm = FormGroup({
-    'key': FormControl<String>(validators: [Validators.required]),
-    'value': FormControl<String>(validators: [Validators.required]),
-  });
- 
-  final requestEntryForm = FormGroup({
-    'key': FormControl<String>(validators: [Validators.required]),
+    'key': FormControl<String>(),
     'value': FormControl<String>(),
   });
- 
+
+  final requestEntryForm = FormGroup({
+    'key': FormControl<String>(),
+    'value': FormControl<String>(),
+  });
+
   String searchQuery = "";
- 
+
   @override
   void initState() {
     super.initState();
     _loadSavedApis();
   }
- 
+
   // ====== SAVE API ======
   void _saveApi() async {
     if (form.valid) {
       final headersArray = form.control('headers') as FormArray;
       final requestArray = form.control('requestKey') as FormArray;
       final responseArray = form.control('responses') as FormArray;
- 
+
       final api = ApiModel(
         apiName: form.control('apiName').value,
         apiEndpoint: form.control('apiEndpoint').value,
@@ -106,20 +108,20 @@ class _SplitPanelState extends State<SplitPanel> {
                 )
                 .toList(),
       );
- 
+
       context.read<ApiBloc>().add(AddApi(api));
       _apiResponse = "";
- 
+
       /* ************** SAVE to shared preference ****************************8 */
       final prefs = await SharedPreferences.getInstance();
       final currentList = prefs.getStringList('saved_apis') ?? [];
       currentList.add(jsonEncode(api.toJson()));
       await prefs.setStringList('saved_apis', currentList);
- 
+
       print("API saved:-----------------> ${api.toJson()}");
- 
+
       /*  ************************************  */
- 
+
       form.reset();
       (form.control('headers') as FormArray).clear();
       (form.control('requestKey') as FormArray).clear();
@@ -130,28 +132,28 @@ class _SplitPanelState extends State<SplitPanel> {
       form.markAllAsTouched();
     }
   }
- 
+
   Future<void> _loadSavedApis() async {
     final prefs = await SharedPreferences.getInstance();
     final savedList = prefs.getStringList('saved_apis') ?? [];
- 
+
     if (savedList.isNotEmpty) {
       final List<ApiModel> loadedApis =
           savedList.map((item) => ApiModel.fromJson(jsonDecode(item))).toList();
- 
+
       // Push loaded APIs into BLoC
       for (var api in loadedApis) {
         context.read<ApiBloc>().add(AddApi(api));
       }
- 
+
       debugPrint("✅ Loaded ${loadedApis.length} APIs from local storage");
     }
   }
- 
+
   // ====== EDIT API ======
   void _editApi(int index) {
     final api = context.read<ApiBloc>().state.apis[index];
- 
+
     form.reset();
     form.patchValue({
       'apiName': api.apiName,
@@ -159,7 +161,7 @@ class _SplitPanelState extends State<SplitPanel> {
       'apiMethodName': api.apiMethodName,
       'httpMethod': api.httpMethod,
     });
- 
+
     final headersArray = form.control('headers') as FormArray;
     final requestArray = form.control('requestKey') as FormArray;
     final responseArray = form.control('responses') as FormArray;
@@ -173,7 +175,7 @@ class _SplitPanelState extends State<SplitPanel> {
           }),
         );
       }
- 
+
       requestArray.clear();
       for (var r in api.requestKeys) {
         requestArray.add(
@@ -183,7 +185,7 @@ class _SplitPanelState extends State<SplitPanel> {
           }),
         );
       }
- 
+
       responseArray.clear();
       for (var r in api.responses) {
         responseArray.add(
@@ -197,16 +199,16 @@ class _SplitPanelState extends State<SplitPanel> {
       print('responseArray----------->${responseArray}');
     });
   }
- 
+
   // ====== DELETE API ======
   void _deleteApi(int index) {
     context.read<ApiBloc>().add(DeleteApi(index));
   }
- 
+
   String _formatDynamicJson(String rawResponse) {
     try {
       final decoded = jsonDecode(rawResponse);
- 
+
       if (decoded is List || decoded is Map) {
         // Pretty print with indentation
         const encoder = JsonEncoder.withIndent('  ');
@@ -220,7 +222,7 @@ class _SplitPanelState extends State<SplitPanel> {
       return rawResponse;
     }
   }
- 
+
   // ===========TEST API =========
   Future<void> _testApi() async {
     if (!form.valid) {
@@ -233,7 +235,7 @@ class _SplitPanelState extends State<SplitPanel> {
     final headersArray = form.control('headers') as FormArray;
     final requestArray = form.control('requestKey') as FormArray;
     print('method------------->$method');
- 
+
     // Prepare headers
     Map<String, String> headers = {
       for (var h in headersArray.controls)
@@ -241,17 +243,17 @@ class _SplitPanelState extends State<SplitPanel> {
             (h).control('value').value != null)
           h.control('key').value: h.control('value').value,
     };
- 
+
     // Prepare body (request keys)
     Map<String, dynamic> body = {
       for (var r in requestArray.controls)
         if ((r as FormGroup).control('key').value != null)
           r.control('key').value: r.control('value').value ?? "",
     };
- 
+
     try {
       http.Response response;
- 
+
       if (method == 'GET' || method == 'get') {
         // Add query params for GET
         // final uri = Uri.parse(url).replace(queryParameters: body);
@@ -264,7 +266,7 @@ class _SplitPanelState extends State<SplitPanel> {
           body: jsonEncode(body),
         );
       }
- 
+
       final formatted = _formatDynamicJson(response.body);
       String responseText = response.body;
       final decoded = jsonDecode(response.body);
@@ -279,7 +281,7 @@ class _SplitPanelState extends State<SplitPanel> {
       setState(() => _isLoading = false);
     }
   }
- 
+
   void _populateResponseArray(dynamic responseJson) {
     final responseArray = form.control('responses') as FormArray;
     responseArray.clear();
@@ -320,12 +322,12 @@ class _SplitPanelState extends State<SplitPanel> {
         }),
       );
     }
- 
+
     debugPrint(
       "✅ Response mapped to FormArray (${responseArray.controls.length} items)",
     );
   }
- 
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ApiBloc, ApiState>(
@@ -338,13 +340,27 @@ class _SplitPanelState extends State<SplitPanel> {
                       api.apiEndpoint.toLowerCase().contains(searchQuery),
                 )
                 .toList();
- 
+
         return Scaffold(
-          appBar: AppBar(title: const Text('API Builder'), elevation: 2),
+          appBar: AppBar(
+            elevation: 2,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HomeScreen(),
+                  ),
+                );
+              },
+            ),
+            title: const Text('API Builder'),
+          ),
           body: LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               final panelWidth = constraints.maxWidth / 3;
- 
+
               return Padding(
                 padding: const EdgeInsets.only(top: 8, left: 4, right: 8),
                 child: Stack(
@@ -356,7 +372,7 @@ class _SplitPanelState extends State<SplitPanel> {
                       left: 0,
                       child: _buildLeftPanel(filteredApis),
                     ),
- 
+
                     // CENTER PANEL
                     Positioned(
                       width: panelWidth + 100,
@@ -364,7 +380,7 @@ class _SplitPanelState extends State<SplitPanel> {
                       left: panelWidth - 50,
                       child: _buildCenterPanel(),
                     ),
- 
+
                     // RIGHT PANEL
                     Positioned(
                       width: panelWidth,
@@ -381,7 +397,7 @@ class _SplitPanelState extends State<SplitPanel> {
       },
     );
   }
- 
+
   // ====== LEFT PANEL ======
   Widget _buildLeftPanel(List<ApiModel> filteredApis) {
     return Column(
@@ -406,7 +422,7 @@ class _SplitPanelState extends State<SplitPanel> {
             itemBuilder: (context, index) {
               final api = filteredApis[index];
               final stateApis = context.read<ApiBloc>().state.apis;
- 
+
               return Card(
                 elevation: 4,
                 margin: const EdgeInsets.all(8),
@@ -434,7 +450,7 @@ class _SplitPanelState extends State<SplitPanel> {
       ],
     );
   }
- 
+
   // ====== CENTER PANEL ======
   Widget _buildCenterPanel() {
     return SingleChildScrollView(
@@ -454,7 +470,7 @@ class _SplitPanelState extends State<SplitPanel> {
                   ElevatedButton.icon(
                     onPressed: _isLoading ? null : _testApi,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
+                      backgroundColor: Colors.blue,
                     ),
                     icon:
                         _isLoading
@@ -472,12 +488,12 @@ class _SplitPanelState extends State<SplitPanel> {
                       style: const TextStyle(color: Colors.white),
                     ),
                   ),
- 
+
                   const SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: _saveApi,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
+                      backgroundColor: Colors.blue,
                     ),
                     child: const Text(
                       "SAVE",
@@ -492,7 +508,7 @@ class _SplitPanelState extends State<SplitPanel> {
       ),
     );
   }
- 
+
   // ====== RIGHT PANEL ======
   Widget _buildRightPanel() {
     final headersArray = form.control('headers') as FormArray;
@@ -504,13 +520,13 @@ class _SplitPanelState extends State<SplitPanel> {
             h.control('value').value != null)
           h.control('key').value: h.control('value').value,
     };
- 
+
     Map<String, String> requestObject = {
       for (var r in requestArray.controls)
         if ((r as FormGroup).control('key').value != null)
           r.control('key').value: r.control('value').value ?? "",
     };
- 
+
     // var responseObject = {
     //   for (var r in responseArray.controls)
     //     if ((r as FormGroup).control('key').value != null)
@@ -529,7 +545,7 @@ class _SplitPanelState extends State<SplitPanel> {
       '_buildRightPanel responseArray-------------->${responseArray.controls}',
     );
     // print('_buildRightPanel responseObject-------------->$responseObject');
- 
+
     return Container(
       color: Colors.grey.shade100,
       padding: const EdgeInsets.all(12),
@@ -595,7 +611,9 @@ class _SplitPanelState extends State<SplitPanel> {
                 // 👈 Scrollable container
                 scrollDirection: Axis.vertical,
                 child: SelectableText(
-                  const JsonEncoder.withIndent('  ').convert(buildResponseJson(responseArray)),
+                  const JsonEncoder.withIndent(
+                    '  ',
+                  ).convert(buildResponseJson(responseArray)),
                   // _formatAsJson(responseObject),
                   // buildResponseJson(responseArray),
                   // responseObject,
@@ -627,43 +645,41 @@ class _SplitPanelState extends State<SplitPanel> {
       ),
     );
   }
- 
+
   String _formatAsJson(Map<dynamic, dynamic> obj) {
     return obj.isEmpty
         ? "{}"
         : "{\n${obj.entries.map((e) => '  \"${e.key}\": \"${e.value}\"').join(',\n')}\n}";
   }
- 
- 
+
   dynamic buildResponseJson(FormArray responseArray) {
-  final items = <Map<String, dynamic>>[];
- 
-  Map<String, dynamic> currentObject = {};
- 
-  for (var i = 0; i < responseArray.controls.length; i++) {
-    final control = responseArray.controls[i] as FormGroup;
-    final key = control.control('key').value;
-    final value = control.control('value').value;
- 
-    // If key already exists → means new object starts
-    if (currentObject.containsKey(key)) {
-      items.add(currentObject);
-      currentObject = {};
+    final items = <Map<String, dynamic>>[];
+
+    Map<String, dynamic> currentObject = {};
+
+    for (var i = 0; i < responseArray.controls.length; i++) {
+      final control = responseArray.controls[i] as FormGroup;
+      final key = control.control('key').value;
+      final value = control.control('value').value;
+
+      // If key already exists → means new object starts
+      if (currentObject.containsKey(key)) {
+        items.add(currentObject);
+        currentObject = {};
+      }
+
+      currentObject[key] = value;
+
+      // Add the last object
+      if (i == responseArray.controls.length - 1) {
+        items.add(currentObject);
+      }
     }
- 
-    currentObject[key] = value;
- 
-    // Add the last object
-    if (i == responseArray.controls.length - 1) {
-      items.add(currentObject);
-    }
+
+    // If it’s only one object, return Map; else, return List
+    return items.length == 1 ? items.first : items;
   }
- 
-  // If it’s only one object, return Map; else, return List
-  return items.length == 1 ? items.first : items;
-}
- 
- 
+
   // ====== COMMON UI SECTIONS ======
   Widget _buildApiInputs() {
     return Column(
@@ -704,7 +720,7 @@ class _SplitPanelState extends State<SplitPanel> {
       ],
     );
   }
- 
+
   Widget _buildHeaderSection() {
     return Padding(
       padding: const EdgeInsets.all(8),
@@ -759,7 +775,7 @@ class _SplitPanelState extends State<SplitPanel> {
       ),
     );
   }
- 
+
   Widget _buildRequestKeySection() {
     return Padding(
       padding: const EdgeInsets.all(8),

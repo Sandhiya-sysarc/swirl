@@ -19,6 +19,7 @@ import 'package:dashboard/pages/dynamic_form_builder.dart';
 import 'package:dashboard/types/drag_drop_types.dart';
 import 'package:dashboard/utils/math_utils.dart';
 import 'package:dashboard/widgets/item_panel.dart';
+import 'package:dashboard/widgets/mobile_screen.dart';
 import 'package:dashboard/widgets/my_drop_region.dart';
 import 'package:dashboard/widgets/right_panel.dart';
 import 'package:flutter/material.dart';
@@ -229,7 +230,8 @@ class _SplitPanelState extends State<SplitPanel> {
                     context,
                     MaterialPageRoute(
                       builder:
-                          (context) => DynamicForm(widgetSchema: schema.schema),
+                          (context) =>
+                              MobileScreen(pageData: schemaWidget.schema),
                     ),
                   );
                 },
@@ -256,25 +258,30 @@ class _SplitPanelState extends State<SplitPanel> {
                   children: [
                     Positioned(
                       // for draggable component
-                      width: leftPanelWidth - 100,
+                      width: leftPanelWidth,
                       height: constraints.maxHeight,
                       left: 0,
-                      child: MyDropRegion(
-                        onDrop: drop,
-                        updateDropPreview: updateDropPreview,
-                        childSize: itemSize,
-                        columns: widget.columns,
-                        panel: Panel.lower,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(color: Colors.pink.shade100),
 
-                        child: ItemPanel(
-                          crossAxisCount: widget.columns,
-                          spacing: widget.itemSpacing,
-                          items: lower,
-                          onDragStart: onItemDragStart,
+                        child: MyDropRegion(
+                          onDrop: drop,
+                          updateDropPreview: updateDropPreview,
+                          childSize: itemSize,
+                          columns: widget.columns,
                           panel: Panel.lower,
-                          dragStart: dragStart,
-                          dropPreview: dropPreview,
-                          hoveringData: hoveringData,
+
+                          child: ItemPanel(
+                            width: leftPanelWidth - 100,
+                            crossAxisCount: widget.columns,
+                            spacing: widget.itemSpacing,
+                            items: lower,
+                            onDragStart: onItemDragStart,
+                            panel: Panel.lower,
+                            dragStart: dragStart,
+                            dropPreview: dropPreview,
+                            hoveringData: hoveringData,
+                          ),
                         ),
                       ),
                     ),
@@ -300,6 +307,7 @@ class _SplitPanelState extends State<SplitPanel> {
                           columns: widget.columns,
                           panel: Panel.upper,
                           child: ItemPanel(
+                            width: leftPanelWidth - 100,
                             crossAxisCount: widget.columns,
                             spacing: widget.itemSpacing,
                             items: upper,
