@@ -10,6 +10,7 @@ import 'dart:ui';
 import 'package:dashboard/appstyles/global_styles.dart';
 import 'package:dashboard/bloc/bpwidgetprops/model/bpwidget_props.dart';
 import 'package:dashboard/bloc/bpwidgets/model/bpwidget.dart';
+import 'package:dashboard/bloc/bpwidgets/page_container.dart';
 import 'package:dashboard/types/drag_drop_types.dart';
 import 'package:dashboard/widgets/containers/dragged_holder.dart';
 import 'package:dashboard/widgets/custom_navigation_rail.dart';
@@ -69,7 +70,7 @@ class _ItemsPanelState extends State<ItemPanel> {
   /// left widgets panels
 
   int selectedIndex = 0;
-  int navSelectedIndex = 0;
+  
 
   Widget getWidgetPlaceholders(
     BPWidget props,
@@ -406,27 +407,7 @@ class _ItemsPanelState extends State<ItemPanel> {
             }).toList(),
       );
     } else {
-      return Row(
-        children: [
-          Container(
-            width: 50,
-            child: CustomNavigationRail(
-              selectedIndex: navSelectedIndex,
-              isExtend: false,
-              label: ["Home", "Pages", "More"],
-              icons: [Icons.home, Icons.file_copy, Icons.more],
-              backgroundColor: Colors.pink.shade100,
-              onDestinationSelected: (value) {
-                setState(() {
-                  navSelectedIndex = value;
-                  if (navSelectedIndex == 0) {
-                    Navigator.pop(context);
-                  }
-                });
-              },
-            ),
-          ),
-          Expanded(
+      return Expanded(
             child: Card(
               color: Colors.white,
               child: Column(
@@ -533,12 +514,12 @@ class _ItemsPanelState extends State<ItemPanel> {
                           }).toList(),
                     ),
                   ),
+                 
                 ],
               ),
             ),
-          ),
-        ],
-      );
+          );
+       
     }
   }
 }
