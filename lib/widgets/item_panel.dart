@@ -12,11 +12,9 @@ import 'package:dashboard/bloc/bpwidgetprops/model/bpwidget_props.dart';
 import 'package:dashboard/bloc/bpwidgets/model/bpwidget.dart';
 import 'package:dashboard/types/drag_drop_types.dart';
 import 'package:dashboard/widgets/containers/dragged_holder.dart';
-import 'package:dashboard/widgets/custom_navigation_rail.dart';
 import 'package:dashboard/widgets/my_draggable_widget.dart';
 import 'package:dashboard/widgets/rightpanels/panel_header.dart';
 import 'package:dashboard/widgets/search_bar.dart';
-
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 
@@ -408,24 +406,6 @@ class _ItemsPanelState extends State<ItemPanel> {
     } else {
       return Row(
         children: [
-          Container(
-            width: 50,
-            child: CustomNavigationRail(
-              selectedIndex: navSelectedIndex,
-              isExtend: false,
-              label: ["Home", "Pages", "More"],
-              icons: [Icons.home, Icons.file_copy, Icons.more],
-              backgroundColor: Colors.pink.shade100,
-              onDestinationSelected: (value) {
-                setState(() {
-                  navSelectedIndex = value;
-                  if (navSelectedIndex == 0) {
-                    Navigator.pop(context);
-                  }
-                });
-              },
-            ),
-          ),
           Expanded(
             child: Card(
               color: Colors.white,
